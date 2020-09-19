@@ -17,7 +17,7 @@ app.get('/api/', (_, res) => {
 });
 
 app.get('/stats/', async (_, res) => {
-  const stats = await client.get('stats');
+  const stats = await client.get('daily');
   res.status(200).send(stats);
 });
 

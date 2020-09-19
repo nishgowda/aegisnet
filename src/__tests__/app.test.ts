@@ -3,8 +3,8 @@ import supertest from 'supertest';
 const request = supertest(app);
 
 // check numbers before call
-const apiCounter = 4;
-const statCounter = 4;
+const apiCounter = 0;
+const statCounter = 0;
 describe('Aegis', () => {
   it('Endpoint test', async () => {
     /* Sends GET Request to /api endpoint 
