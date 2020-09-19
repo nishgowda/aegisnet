@@ -1,5 +1,4 @@
 export interface Stats {
-  response?: string;
-  event?: string;
+  event?: string
   [key: string]: any;
 }

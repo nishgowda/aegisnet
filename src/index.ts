@@ -1,6 +1,6 @@
 import redis from 'async-redis';
 import { Stats } from './types/stats';
-import { Req, Res } from './types/url';
+import { NextFunction, Response, Request } from 'express';
 
 export class Aegis {
   persistance: string;
@@ -15,7 +15,7 @@ export class Aegis {
     }
   }
 
-  #fetchRoute = (req: Req) => {
+  #fetchRoute = (req: Request) => {
     const route: string = req.route ? req.route.path : '';
     const baseUrl: string = req.baseUrl ? req.baseUrl : '';
     return route ? `${baseUrl === '/' ? '' : baseUrl}${route}` : 'unknown route';
@@ -39,7 +39,7 @@ export class Aegis {
     return data;
   };
 
-  #dumpStats = async (stats: any, key: string) => {
+  #dumpStats = async (stats: Stats, key: string) => {
     try {
       switch (this.persistance) {
         case 'redis':
@@ -53,21 +53,30 @@ export class Aegis {
       throw error;
     }
   };
-
-  listen = async (req: Req, res: Res, next: any) => {
+    #returnDate = () => {
+        let dateObj = new Date();
+        let month = dateObj.getUTCMonth() + 1; //months from 1-12
+        let day = dateObj.getUTCDate();
+        let year = dateObj.getUTCFullYear();
+        let newDate = year + "/" + month + "/" + day;
+        return newDate;
+  }
+  listen = async (req: Request, res: Response, next: NextFunction) => {
     res.on('finish', () => {
       this.#getStats('stats')
         .then((response) => {
-          if (!response) {
-            const event = `${req.method} ${this.#fetchRoute(req)} ${res.statusCode}`;
+            if (!response) {
+            const newDate = this.#returnDate();
+            const event = `${newDate}: ${req.method} ${this.#fetchRoute(req)} ${res.statusCode}`;
             let myStats: Stats;
-            myStats = { event };
+            myStats = {};
             myStats[event] = myStats[event] ? myStats[event] + 1 : 1;
             this.#dumpStats(myStats, 'stats');
-          } else {
+            } else {
             let myStats: Stats;
             myStats = response;
-            const event = `${req.method} ${this.#fetchRoute(req)} ${res.statusCode}`;
+            const newDate = this.#returnDate();
+            const event = `${newDate}:${req.method} ${this.#fetchRoute(req)} ${res.statusCode}`;
             myStats[event] = myStats[event] ? myStats[event] + 1 : 1;
             this.#dumpStats(myStats, 'stats');
           }
