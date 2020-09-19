@@ -1,9 +1,9 @@
-import { Request, Response } from "express"
+import { Request, Response } from 'express';
 export interface Req extends Request {
-    route: { path: string }, 
-    baseUrl: string,
+  route: { path: string };
+  baseUrl: string;
 }
 
 export interface Res extends Response {
-    statusCode: number,
+  statusCode: number;
 }
