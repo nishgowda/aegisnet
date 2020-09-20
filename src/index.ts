@@ -91,7 +91,7 @@ export class Aegis {
                     item[0].requests ? item[0].requests += 1 : item[0].requests = 1;
                   } else {
                     event.requests = 1;
-                    myStats.push(event);
+                    item.push(event);
                   }
                 })
               } else {
@@ -114,7 +114,6 @@ export class Aegis {
         .then((response) => {
           let myStats: Event[];
           myStats = [response] || [{}]; // If repsonse is null create an empty object
-              
               const event: Event = {
                 method: req.method,
                 route: this.fetchRoute(req),
@@ -126,7 +125,7 @@ export class Aegis {
                     item[0].requests ? item[0].requests += 1 : item[0].requests = 1;
                   } else {
                     event.requests = 1;
-                    myStats.push(event)
+                    item.push(event)
                   }
                 })
               } else {
