@@ -1,12 +1,11 @@
 import express from 'express';
-import { Aegis, AegisWeb } from '../index';
+import { Aegis } from '../index';
 import redis from 'async-redis';
 
 const connectionString = 'redis://127.0.0.1:6379';
 const app = express();
 app.use(express.json());
 const aegis = new Aegis(connectionString);
-const web = new AegisWeb(connectionString)
 const client = redis.createClient(connectionString);
 
 app.use((req, res, next) => {
@@ -22,9 +21,7 @@ app.get('/stats/', async (_, res) => {
   res.status(200).send(stats);
 });
 
-app.get('/data', (_, res) => {
-  web.web(res);
-})
+
 
 const port = 5000;
 if (process.env.NODE_ENV !== 'test') {

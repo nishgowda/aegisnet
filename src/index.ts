@@ -144,11 +144,3 @@ export class Aegis {
   }
 }
 
-export class AegisWeb extends Aegis {
-
-  web = async(res: Response) => {
-    const value = await this.client.mget(['daily', 'total'])
-    console.log('value', (value))
-    res.render('../src/views/web.ejs', { value });
-  }
-}
