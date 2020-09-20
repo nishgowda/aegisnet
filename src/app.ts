@@ -1,5 +1,5 @@
 import express from 'express';
-import { Aegis } from '../index';
+import {Aegis} from './index';
 import redis from 'async-redis';
 
 const connectionString = 'redis://127.0.0.1:6379';
@@ -12,13 +12,22 @@ app.use((req, res, next) => {
   aegis.listen(req, res, next);
 });
 
-app.get('/api/', (_, res) => {
-  res.status(200).send('Hello');
+app.get('/api/', async (_, res) => {
+  try {
+    res.status(200).send('Hello');
+  } catch (error) {
+    throw error;
+  }
 });
 
 app.get('/stats/', async (_, res) => {
-  const stats = await client.get('daily');
+  try {
+    const stats = await client.get('total');
   res.status(200).send(stats);
+  } catch (error) {
+    throw error;
+  }
+  
 });
 
 const port = 5000;

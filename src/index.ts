@@ -3,7 +3,7 @@ import { Event, Stats } from './types/stats';
 import { NextFunction, Response, Request } from 'express';
 
 export class Aegis {
-  private connectionString: string;
+  private connectionString;
   protected client: any;
   constructor(connectionString: string) {
     this.connectionString = connectionString;
@@ -11,7 +11,7 @@ export class Aegis {
   }
 
   /* 
-    Fetches the endpoint of url in custom form of
+    Fetches the endpoint of url in custom form of:
     /{endpoint}/
   */
   private fetchRoute = (req: Request) => {
