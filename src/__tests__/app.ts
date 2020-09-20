@@ -21,8 +21,6 @@ app.get('/stats/', async (_, res) => {
   res.status(200).send(stats);
 });
 
-
-
 const port = 5000;
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port);
