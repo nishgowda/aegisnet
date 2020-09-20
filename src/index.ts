@@ -1,10 +1,10 @@
 import redis from 'async-redis';
-import { Stats } from './types/stats';
+import { Event } from './types/stats';
 import { NextFunction, Response, Request } from 'express';
 
 export class Aegis {
   private connectionString: string;
-  private client: any;
+  protected client: any;
   constructor(connectionString: string) {
     this.connectionString = connectionString;
     this.client = redis.createClient(this.connectionString);
@@ -33,17 +33,14 @@ export class Aegis {
   };
 
   // Reset the value of key with updated stats and endpoints
-  private dumpStats = async (stats: Stats, key: string) => {
+  private dumpStats = async (stats: Event[], key: string) => {
     try {
       switch (key) {
         case 'daily':
           this.client.set(key, JSON.stringify(stats));
-          this.client.set('total', JSON.stringify(stats));
           break;
         case 'total':
           this.client.set(key, JSON.stringify(stats))
-          stats.date = this.returnDate();
-          this.client.set('daily', JSON.stringify(stats));
           break;
         default:
           break;
@@ -79,16 +76,28 @@ export class Aegis {
     try {
           this.getStats('daily')
             .then((response) => {
-              let myStats: Stats;
-              myStats = response || {}; // If repsonse is null create an empty object
+              let myStats: Event[];
+              myStats = [response] || [{}]; // If repsonse is null create an empty object
               const newDate = this.returnDate();
-              const event = JSON.stringify({
+              const event: Event = {
                 method: req.method,
                 route: this.fetchRoute(req),
                 statusCode: res.statusCode,
                 date: newDate
-              });
-              myStats[event] = myStats[event] ? myStats[event] + 1 : 1;
+              }
+              if (response) {
+                myStats.map((item: any) => {
+                  if (item[0].date == event.date && item[0].method == event.method && item[0].route == event.route && item[0].statusCode == event.statusCode) {
+                    item[0].requests ? item[0].requests += 1 : item[0].requests = 1;
+                  } else {
+                    event.requests = 1;
+                    myStats.push(event);
+                  }
+                })
+              } else {
+                event.requests = 1;
+                myStats[0] = event
+              }
               this.dumpStats(myStats, 'daily');
             })
             .catch((err) => {
@@ -102,15 +111,28 @@ export class Aegis {
   private fetchTotalStats = async (req: Request, res: Response) => {
     try {
       this.getStats('total')
-            .then((response) => {
-              let myStats: Stats;
-              myStats = response || {}; // If repsonse is null create an empty object
-              const event = JSON.stringify({
+        .then((response) => {
+          let myStats: Event[];
+          myStats = [response] || [{}]; // If repsonse is null create an empty object
+              
+              const event: Event = {
                 method: req.method,
                 route: this.fetchRoute(req),
                 statusCode: res.statusCode,
-              });
-              myStats[event] = myStats[event] ? myStats[event] + 1 : 1;
+              };
+              if (response) {
+                myStats.map((item: any) => {
+                  if (item[0].method == event.method && item[0].route == event.route && item[0].statusCode == event.statusCode) {
+                    item[0].requests ? item[0].requests += 1 : item[0].requests = 1;
+                  } else {
+                    event.requests = 1;
+                    myStats.push(event)
+                  }
+                })
+              } else {
+                event.requests = 1;
+                myStats[0] = (event);
+              }
               this.dumpStats(myStats, 'total');
             })
             .catch((err) => {
@@ -122,4 +144,11 @@ export class Aegis {
   }
 }
 
+export class AegisWeb extends Aegis {
 
+  web = async(res: Response) => {
+    const value = await this.client.mget(['daily', 'total'])
+    console.log('value', (value))
+    res.render('../src/views/web.ejs', { value });
+  }
+}
