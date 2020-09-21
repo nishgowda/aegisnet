@@ -1,11 +1,14 @@
-import redis from 'async-redis';
-const connectionString = 'redis://127.0.0.1:6379';
-const client = redis.createClient(connectionString);
-
-
+import fs from 'fs'
+import path from 'path'
+const dir = path.resolve(__dirname, '.././mocks/data.json')
+var obj = JSON.parse(fs.readFileSync(dir, 'utf8'));
  // Check redis before running. Update on change
+
 test('Aegis endpoint tests', async () => {
-  const stats = await client.get('total');
-  console.log(stats);
-  expect(stats).toEqual("[{\"method\":\"GET\",\"route\":\"/stats/\",\"statusCode\":200,\"requests\":6}]");
+  try {
+      expect(obj).toEqual([ { "method": "GET", "route": "/api/users", "statusCode": 200, "requests": 10 }])
+  } catch (error) {
+    throw error;
+  }
+
 });
