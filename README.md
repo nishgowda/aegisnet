@@ -37,7 +37,7 @@ app.use((req, res, next) => {
 ```javascript
 app.get('/api/users',  (_, res) => {
       // note: Redis will store the data as a JSON string 
-     //  so it's important you parse to work with data.
+     //  so it's important you parse to work with it.
     client.get('total', (err, stats) => {
         res.status(200).send(JSON.parse(stats));
     });
