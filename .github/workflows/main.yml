@@ -4,8 +4,8 @@
 name: deploy
 
 on:
-  release:
-    types: [created]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-vwrsion: ${{ matriz.node-version }}
+          node-vwrsion: ${{ matrix.node-version }}
      
       - name: Start Redis v${{ matrix.redis-version }}
         uses: superchargejs/redis-github-action@1.1.0
