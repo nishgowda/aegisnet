@@ -34,39 +34,25 @@ app.use((req, res, next) => {
 ```
 
 ### Retrieving the data:
-
-####  If you're using node-redis:
 ```javascript
-app.get('/stats/',  (_, res) => {
+app.get('/api/users',  (_, res) => {
       // note: Redis will store the data as a JSON string 
      //  so it's important you parse to work with data.
     client.get('total', (err, stats) => {
         res.status(200).send(JSON.parse(stats));
     });
 });
-```
-#### If you're using async-redis:
-```javascript
-app.get('/stats/', async (_, res) => {
-  try {
-    const stats = await client.get('total');
-    // note: Redis will store the data as a JSON string 
-    //  so it's important you parse to work with data.
-    res.status(200).send(JSON.parse(stats));
-  } catch (error) {
-    throw error;
-  }
-});
+
 ```
 
 #### Example data:
 
 ``` JSON
-[ { "method": "GET", "route": "/stats/", "statusCode": 200, "requests": 10 }]
+[ { "method": "GET", "route": "/api/users", "statusCode": 200, "requests": 10 }]
 
 ```
 ``` JSON
-[ { "method": "GET", "route": "/api/", "statusCode": 200, "requests": 5, "date": "9/20/2020" }]
+[ { "method": "POST", "route": "/api/users", "statusCode": 200, "requests": 5, "date": "9/20/2020" }]
 
 ```
 
