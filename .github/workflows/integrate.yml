@@ -17,16 +17,16 @@ jobs:
 
     steps:
     - name: Git checkout
-    uses: actions/checkout@v1
+      uses: actions/checkout@v1
 
     - name: Use Node.js ${{ matrix.node-version }}
-    uses: actions/setup-node@v1
-    with:
+      uses: actions/setup-node@v1
+      with:
         node-version: ${{ matrix.node-version }}
 
     - name: Start Redis
-    uses: supercharge/redis-github-action@1.1.0
-    with:
+      uses: supercharge/redis-github-action@1.1.0
+      with:
         redis-version: ${{ matrix.redis-version }}
 
     - run: npm install
