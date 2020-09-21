@@ -5,6 +5,7 @@ const request = supertest(app);
 const requstCount = 55; // Check redis before running. Update on change
 test('Aegis endpoint tests', async (done) => {
   const result = await request.get('/stats/');
+  
   expect(JSON.parse(result.text)).toEqual(
     [ { method: 'GET', route: '/stats/', statusCode: 200, requests: requstCount } ]
   );
