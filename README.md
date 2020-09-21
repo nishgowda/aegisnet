@@ -1,5 +1,5 @@
 ![Logo](misc/AegisNet-logo.png)
-
+![AppVeyor](https://img.shields.io/badge/build-passing-brightgreen)
 Fast and light weight api and endpoint monitoring backed by Redis and carefully written for scalabilty and performace.
 
 ## Features:
@@ -19,7 +19,7 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
     npm install aegis-net
 ```
 
-### Usage:
+## Usage:
 ``` javascript
 const express = require('express')
 const AegisNet = require('aegis-net');
@@ -35,6 +35,17 @@ app.use((req, res, next) => {
 ```
 
 ### Retrieving the data:
+
+####  If you're using node-redis:
+```javascript
+app.get('/stats/',  (_, res) => {
+      // note: Redis will store the data as a JSON string 
+     //  so it's important you parse to work with data.
+    client.get('total', (err, stats) => {
+        res.status(200).send(JSON.parse(stats));
+    });
+});
+```
 #### If you're using async-redis:
 ```javascript
 app.get('/stats/', async (_, res) => {
@@ -48,16 +59,7 @@ app.get('/stats/', async (_, res) => {
   }
 });
 ```
-#### Otherwise if you're using node-redis:
-```javascript
-app.get('/stats/',  (_, res) => {
-      // note: Redis will store the data as a JSON string 
-     //  so it's important you parse to work with data.
-    client.get('total', (err, stats) => {
-        res.status(200).send(JSON.parse(stats));
-    });
-});
-```
+
 #### Example data:
 
 ``` JSON
