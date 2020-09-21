@@ -8,7 +8,7 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 - [X] Daily monitoring
 - [ ] Hourly monitoring
 
-### To Sum it up:
+### A quick rundown:
 * AegisNet defines it's data as a made "event". An event is made up of the method, the route, the status code, and possibily the date (depending on which key is being assigned) that is requested. When a certain event is hit, the number of requests are incremented.
 
 * Redis stores the data per request into two sepreate keys. As seen below, one of these is "total". As the name implies it stores the total number of requests for each event. If you want to retrieve the daily total, you can just specify the "daily" key instead. 
