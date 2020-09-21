@@ -1,5 +1,4 @@
 ![Logo](misc/AegisNet-logo.png)
-![AppVeyor](https://img.shields.io/badge/build-passing-brightgreen)
 Fast and light weight api and endpoint monitoring backed by Redis and carefully written for scalabilty and performace.
 
 ## Features:
