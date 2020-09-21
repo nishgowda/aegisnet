@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: 12
-        redis-version: 5
+        node-version: [8.x, 10.x, 12.x, 13.x]
+        redis-version: [4, 5]
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
@@ -29,7 +29,6 @@ jobs:
           redis-version: ${{ matrix.redis-version }}
     
       - run: npm install
-    
       - run: npm test
 
   publish-npm:
