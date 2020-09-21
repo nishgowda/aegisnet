@@ -1,5 +1,5 @@
 import express from 'express';
-import {Aegis} from './index';
+import { Aegis } from './index';
 import redis from 'async-redis';
 
 const connectionString = 'redis://127.0.0.1:6379';
@@ -23,16 +23,14 @@ app.get('/api/', async (_, res) => {
 app.get('/stats/', async (_, res) => {
   try {
     const stats = await client.get('total');
-  res.status(200).send(stats);
+    res.status(200).send(stats);
   } catch (error) {
     throw error;
   }
-  
 });
 
 const port = 5000;
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(port);
-}
+app.listen(port);
+
 
 export default app;
