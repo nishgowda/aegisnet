@@ -17,7 +17,6 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 ## Install
 ``` 
     npm install aegis-net
-    
 ```
 
 ### Usage:
