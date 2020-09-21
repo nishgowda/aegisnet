@@ -7,5 +7,6 @@ export type Event = {
   route?: string;
   statusCode?: number;
   date?: string;
+  hour?: string;
   requests?: number;
 };

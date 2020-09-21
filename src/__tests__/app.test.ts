@@ -5,8 +5,8 @@ const request = supertest(app);
  // Check redis before running. Update on change
 test('Aegis endpoint tests', async () => {
   const result = await request.get('/stats/');
-
-  expect(JSON.parse(result.text)).toEqual(
+  let json = JSON.parse(result.text)
+  expect(json).toEqual(
     expect.arrayContaining([
       expect.objectContaining({ method: "GET", route: "/stats/", statusCode: 200 }),
     ])

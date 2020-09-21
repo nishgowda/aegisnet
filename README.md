@@ -6,12 +6,15 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 - [X] Easily intergratable with express
 - [X] Fast and efficient data storage based on Redis
 - [X] Daily monitoring
-- [ ] Hourly monitoring
+- [X] Hourly monitoring
 
 ### A quick rundown:
-* AegisNet defines it's data as a made "event". An event is made up of the method, the route, the status code, and possibily the date (depending on which key is being assigned) that is requested. When a certain event is hit, the number of requests are incremented.
+* An object is made in redis that is defined as an **event**. An **event** is a collection of the route, the method, the status code, the number of requests, and date and hour (depending on what key is specified).
 
-* Redis stores the data per request into two sepreate keys. As seen below, one of these is "total". As the name implies it stores the total number of requests for each event. If you want to retrieve the daily total, you can just specify the "daily" key instead. 
+* Redis stores the data per request into three sepreate keys:
+ - "total" - the total number of requests per event (date and hour are not included here)
+ - "daily" - the total number of requests per event per day
+ - "hourly" - the total number of requests per event per hour of every day.
 
 ## Install
 ``` 
@@ -53,6 +56,10 @@ app.get('/api/users',  (_, res) => {
 ```
 ``` JSON
 [ { "method": "POST", "route": "/api/users", "statusCode": 200, "requests": 5, "date": "9/20/2020" }]
+
+```
+``` JSON
+[ { "method": "PUT", "route": "/api/users", "statusCode": 200, "requests": 2, "date": "9/20/2020", "hour": "12" }]
 
 ```
 

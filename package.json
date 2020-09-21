@@ -2,7 +2,7 @@
   "name": "aegis-net",
   "version": "1.0.3",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest --forceExit --config jestconfig.json",
     "build": "tsc",
