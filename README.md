@@ -21,7 +21,7 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 ## Usage:
 ``` javascript
 const express = require('express')
-const AegisNet = require('aegis-net');
+const { AegisNet } = require('aegis-net');
 const app = express();
 app.use(express.json());
 // must include your redis connection String

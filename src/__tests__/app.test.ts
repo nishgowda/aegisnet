@@ -2,12 +2,13 @@ import app from '../app'; // Link to server file
 import supertest from 'supertest';
 const request = supertest(app);
 
-const requstCount = 55; // Check redis before running. Update on change
-test('Aegis endpoint tests', async (done) => {
+ // Check redis before running. Update on change
+test('Aegis endpoint tests', async () => {
   const result = await request.get('/stats/');
-  
+
   expect(JSON.parse(result.text)).toEqual(
-    [ { method: 'GET', route: '/stats/', statusCode: 200, requests: requstCount } ]
+    expect.arrayContaining([
+      expect.objectContaining({ method: "GET", route: "/stats/", statusCode: 200 }),
+    ])
   );
-  done();
 });
