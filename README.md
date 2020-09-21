@@ -15,7 +15,10 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 * Redis stores the data per request into two sepreate keys. As seen below, one of these is "total". As the name implies it stores the total number of requests for each event. If you want to retrieve the daily total, you can just specify the "daily" key instead. 
 
 ## Install
-``` npm install aegis ```
+``` 
+    npm install aegis
+    
+```
 
 ### Usage:
 ``` javascript
@@ -39,7 +42,7 @@ app.get('/stats/', async (_, res) => {
   try {
     const stats = await client.get('total');
     // note: Redis will store the data as a JSON string 
-    //  so its important you parse to work with data.
+    //  so it's important you parse to work with data.
     res.status(200).send(JSON.parse(stats));
   } catch (error) {
     throw error;
@@ -50,7 +53,7 @@ app.get('/stats/', async (_, res) => {
 ```javascript
 app.get('/stats/',  (_, res) => {
       // note: Redis will store the data as a JSON string 
-     //  so its important you parse to work with data.
+     //  so it's important you parse to work with data.
     client.get('total', (err, stats) => {
         res.status(200).send(JSON.parse(stats));
     });
