@@ -1,5 +1,5 @@
 {
-  "name": "aegis",
+  "name": "aegis-net",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -22,7 +22,7 @@
     "type": "git",
     "url": "git+https://github.com/nishgowda/Aegis.git"
   },
-  "keywords": ["Aegis"],
+  "keywords": ["AegisNet"],
   "author": "Nish Gowda",
   "license": "MIT",
   "bugs": {

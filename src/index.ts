@@ -2,7 +2,7 @@ import redis from 'async-redis';
 import { Event, Stats } from './types/stats';
 import { NextFunction, Response, Request } from 'express';
 
-export class Aegis {
+export class AegisNet {
   private connectionString;
   protected client: any;
   constructor(connectionString: string) {

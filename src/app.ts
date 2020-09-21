@@ -1,11 +1,11 @@
 import express from 'express';
-import { Aegis } from './index';
+import { AegisNet } from './index';
 import redis from 'async-redis';
 
 const connectionString = 'redis://127.0.0.1:6379';
 const app = express();
 app.use(express.json());
-const aegis = new Aegis(connectionString);
+const aegis = new AegisNet(connectionString);
 const client = redis.createClient(connectionString);
 
 app.use((req, res, next) => {
