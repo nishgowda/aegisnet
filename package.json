@@ -17,6 +17,7 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "files": ["dist/**/*"],
   "repository": {
     "type": "git",
