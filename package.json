@@ -2,7 +2,8 @@
   "name": "aegis-net",
   "version": "1.0.3",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest --forceExit --config jestconfig.json",
     "build": "tsc",
@@ -14,7 +15,7 @@
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
-    "version": "npm run format && git add -A src",
+    "version": "npm run format && git add -A src --no-git-tag-version",
     "postversion": "git push && git push --tags"
   },
   "publishConfig": {
