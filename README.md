@@ -7,7 +7,7 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 ![npm-publish](https://github.com/nishgowda/AegisNet/workflows/npm-publish/badge.svg?branch=master)
 ## Features:
 - [X] Url request monitoring
-- [X] Easily intergratable with express
+- [X] Easily integratable with express
 - [X] Fast and efficient data storage based on Redis
 - [X] Daily monitoring
 - [X] Hourly monitoring
