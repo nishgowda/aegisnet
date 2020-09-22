@@ -6,16 +6,16 @@ on:
 
 jobs:
   release:
+    name: publish
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.1.1
       - name: node
-      # Setup .npmrc file to publish to npm
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v1.4.2
         with:
-          node-version: '12.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: 12
+          registry-url: https://registry.npmjs.org
       - name: publish
       - run: npm publish --access public
         env:
