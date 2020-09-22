@@ -1,7 +1,8 @@
 ![Logo](misc/AegisNet-logo.png)
 
 
-Fast and light weight api and endpoint monitoring backed by Redis and carefully written for scalabilty and performace.
+Fast and light weight api and endpoint monitoring backed by Redis and carefully written for performace.
+
 ![build](https://github.com/nishgowda/AegisNet/workflows/build/badge.svg)
 
 ## Features:
