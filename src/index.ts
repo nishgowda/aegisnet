@@ -5,13 +5,14 @@ import { NextFunction, Response, Request } from 'express';
 export class AegisNet {
   private connectionString;
   protected client: any;
+  private responseTime: number;
   constructor(connectionString: string) {
     this.connectionString = connectionString;
     this.client = redis.createClient(this.connectionString);
   }
 
   /* 
-    Fetches the endpoint of url in custom form of:
+    Fetches the endpoint url in custom form of:
     /{endpoint}/
   */
   private fetchRoute = (req: Request) => {
@@ -45,6 +46,9 @@ export class AegisNet {
         case 'hourly':
           this.client.set(key, JSON.stringify(stats));
           break;
+        case 'response-times':
+          this.client.set(key, JSON.stringify(stats));
+          break;
         default:
           break;
       }
@@ -63,22 +67,58 @@ export class AegisNet {
     return newDate;
   };
 
+  // Helper to retrieve the hour in local time of each request
   private returnHour = () => {
     const dateObj = new Date();
     const hour = dateObj.getHours();
     return `${hour}`;
-  }
+  };
+  // Helper to retrieve the response time in milliseconds for each request sent to express server.
+  private getResponseTime = (start: any) => {
+    const NS_PER_SEC = 1e9;
+    const NS_TO_MS = 1e6;
+    const diff = process.hrtime(start);
+    return (diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS;
+  };
   /* 
     Active listener to be used as middleware with express
     every time an endpoint is hit we update the key with called endpoints and stats
   */
   listen = async (req: Request, res: Response, next: NextFunction) => {
+    const start = process.hrtime();
     res.on('finish', () => {
+      this.responseTime = this.getResponseTime(start);
       this.fetchDailyStats(req, res);
       this.fetchHourlyStats(req, res);
       this.fetchTotalStats(req, res);
+      this.fetchResponseTimes(req, res);
     });
     next();
+  };
+  // Fetch the event and the the response time of each event.
+  private fetchResponseTimes = async (req: Request, res: Response) => {
+    try {
+      this.getStats('response-times')
+        .then((response) => {
+          let myStats: Stats[];
+          myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
+          const event: Event = {
+            method: req.method,
+            route: this.fetchRoute(req),
+            statusCode: res.statusCode,
+            date: this.returnDateFull(),
+            hour: this.returnHour(),
+            responseTime: this.responseTime,
+          };
+          myStats.push(event);
+          this.dumpStats(myStats, 'response-times');
+        })
+        .catch((err) => {
+          throw err;
+        });
+    } catch (error) {
+      throw error;
+    }
   };
 
   // Fetches the number of events hit per day
@@ -88,12 +128,11 @@ export class AegisNet {
         .then((response) => {
           let myStats: Stats[];
           myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
-          const newDate = this.returnDateFull();
           const event: Event = {
             method: req.method,
             route: this.fetchRoute(req),
             statusCode: res.statusCode,
-            date: newDate,
+            date: this.returnDateFull(),
           };
           if (response) {
             if (
@@ -136,20 +175,18 @@ export class AegisNet {
       throw error;
     }
   };
-  private fetchHourlyStats = async (req: Request, res: Response) =>  {
+  private fetchHourlyStats = async (req: Request, res: Response) => {
     try {
       this.getStats('hourly')
         .then((response) => {
           let myStats: Stats[];
-          const newDate = this.returnDateFull();
-          const hour = this.returnHour();
           myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
           const event: Event = {
             method: req.method,
             route: this.fetchRoute(req),
             statusCode: res.statusCode,
-            date: newDate,
-            hour: hour
+            date: this.returnDateFull(),
+            hour: this.returnHour(),
           };
           if (response) {
             if (
@@ -190,11 +227,10 @@ export class AegisNet {
         .catch((err) => {
           throw err;
         });
-          
-    }catch(error) {
+    } catch (error) {
       throw error;
-      }
-  }
+    }
+  };
 
   // Fethces the total number of requests for each event hit
   private fetchTotalStats = async (req: Request, res: Response) => {
