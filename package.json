@@ -1,6 +1,6 @@
 {
   "name": "aegis-net",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,15 +17,12 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "files": [
     "dist/**/*"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nishgowda/Aegis.git"
+    "url": "git+https://github.com/nishgowda/AegisNet"
   },
   "keywords": [
     "AegisNet",
@@ -35,9 +32,9 @@
   "author": "Nish Gowda",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nishgowda/Aegis/issues"
+    "url": "https://github.com/nishgowda/AegisNet/issues"
   },
-  "homepage": "https://github.com/nishgowda/Aegis#readme",
+  "homepage": "https://github.com/nishgowda/AegisNet#readme",
   "devDependencies": {
     "@types/async-redis": "^1.1.1",
     "@types/express": "^4.17.8",
