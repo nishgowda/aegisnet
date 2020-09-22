@@ -9,4 +9,5 @@ export type Event = {
   date?: string;
   hour?: string;
   requests?: number;
+  responseTime?: number;
 };
