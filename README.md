@@ -2,7 +2,7 @@
 
 
 Fast and light weight api and endpoint monitoring backed by Redis and carefully written for scalabilty and performace.
-![integrate](https://github.com/nishgowda/AegisNet/workflows/integrate/badge.svg)
+![build](https://github.com/nishgowda/AegisNet/workflows/build/badge.svg)
 
 ## Features:
 - [X] Url request monitoring
