@@ -1,10 +1,8 @@
 import express from "express";
 import { AegisNet }  from "..";
-import redis from "redis";
+import Redis from "ioredis";
 const app = express();
-const connectionString = "redis://127.0.0.1:6379";
-
-const client = redis.createClient(connectionString);
+const client = new Redis()
 const aegis = new AegisNet();
 app.use(aegis.express({ host: "localhost", port: 6379 }));
 

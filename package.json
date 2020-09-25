@@ -51,7 +51,6 @@
     "koa": "^2.13.0",
     "nodemon": "^2.0.4",
     "prettier": "^2.1.2",
-    "redis-mock": "^0.52.0",
     "supertest": "^4.0.2",
     "ts-jest": "^26.3.0",
     "tslint": "^6.1.3",
