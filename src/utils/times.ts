@@ -1,4 +1,3 @@
-
 // Helper to return date in MM/DD/YYYY format
 export const returnDateFull = () => {
   const dateObj = new Date();

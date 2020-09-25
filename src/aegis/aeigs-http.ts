@@ -7,7 +7,7 @@ export let httpState = {
   responseTime: 0 as number,
 };
 
-// Helper to fetch formatted route 
+// Helper to fetch formatted route
 const httpFetchRoute = (req: IncomingMessage) => {
   const route: string = req.url ? req.url : "unkown";
   if (!route) {

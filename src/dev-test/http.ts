@@ -1,5 +1,5 @@
 import http from "http";
-import AegisNet from "../index";
+import { AegisNet } from "../index";
 const aegis = new AegisNet();
 
 const server = http.createServer((req, res) => {

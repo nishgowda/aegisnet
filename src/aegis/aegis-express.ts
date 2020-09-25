@@ -35,7 +35,6 @@ const expressDumpStats = async (stats: Event[], key: string) => {
   }
 };
 
-
 // Fetch the event and the the response time of each event.
 export const expressFetchResponseTimes = async (
   req: Request,

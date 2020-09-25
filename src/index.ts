@@ -27,7 +27,7 @@ import { NextFunction, Request, Response } from "express";
 import { Context, Next } from "koa";
 import { IncomingMessage, ServerResponse } from "http";
 
-export default class AegisNet {
+export class AegisNet {
   express(options?: Options) {
     return (req: Request, res: Response, next: NextFunction) => {
       if (options?.port || options?.host) {

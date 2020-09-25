@@ -10,7 +10,7 @@ export let koaState = {
 
 // Helper to format the route
 const koaFetchRoute = (ctx: Context) => {
-  const route: string = ctx.req.url ? ctx.req.url : "unkown"; 
+  const route: string = ctx.req.url ? ctx.req.url : "unkown";
   if (!route) {
     return "unkown route";
   }
@@ -37,7 +37,6 @@ const koaDumpStats = async (stats: Event[], key: string) => {
     throw error;
   }
 };
-
 
 // Fetch the event and the the response time of each event.
 export const koaFetchResponseTimes = async (ctx: Context) => {
