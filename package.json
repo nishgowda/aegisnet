@@ -6,6 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest --forceExit --config jestconfig.json",
+    "test-express": "nodemon --exec ts-node src/mocks/express.ts",
+    "test-koa": "nodemon --exec ts-node src/mocks/koa.ts",
     "build": "tsc",
     "watch": "tsc -w",
     "start": "ts-node src/index.ts",
@@ -36,12 +38,15 @@
   },
   "homepage": "https://github.com/nishgowda/AegisNet#readme",
   "devDependencies": {
+    "@koa/router": "^9.4.0",
     "@types/async-redis": "^1.1.1",
     "@types/express": "^4.17.8",
-    "express": "^4.17.1",
     "@types/jest": "^26.0.14",
+    "@types/koa": "^2.11.4",
     "@types/supertest": "^2.0.10",
+    "express": "^4.17.1",
     "jest": "^26.4.2",
+    "koa": "^2.13.0",
     "nodemon": "^2.0.4",
     "prettier": "^2.1.2",
     "supertest": "^4.0.2",
@@ -51,6 +56,11 @@
     "typescript": "^4.0.3"
   },
   "dependencies": {
-    "async-redis": "^1.1.7"
+    "@types/ioredis": "^4.17.4",
+    "@types/koa__router": "^8.0.2",
+    "async-redis": "^1.1.7",
+    "ioredis": "^4.17.3",
+    "redis-json": "^4.2.0",
+    "save-dev": "0.0.1-security"
   }
 }

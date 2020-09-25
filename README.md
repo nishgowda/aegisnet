@@ -4,7 +4,8 @@
 Fast and light weight api and endpoint monitoring backed by Redis and carefully written for performace.
 
 ![build](https://github.com/nishgowda/AegisNet/workflows/build/badge.svg)
-![npm-publish](https://github.com/nishgowda/AegisNet/workflows/npm-publish/badge.svg?branch=master)
+![npm](https://img.shields.io/npm/v/aegis-net)
+![GitHub](https://img.shields.io/github/license/nishgowda/aegis)
 ## Features:
 - [X] Url request monitoring
 - [X] Easily intergratable with express
@@ -46,27 +47,23 @@ app.use((req, res, next) => {
 ```javascript
 app.get('/api/users',  (_, res) => {
       // note: Redis will store the data as a JSON string 
-     //  so it's important you parse after you retrueve itto work with it.
+     //  so it's important you parse after you retrieve it to work with it.
     client.get('total', (err, stats) => {
         res.status(200).send(stats);
     });
 });
-
 ```
 
 #### Example data:
 
 ``` JSON
 [ { "method": "GET", "route": "/api/users", "statusCode": 200, "requests": 10 }]
-
 ```
 ``` JSON
 [ { "method": "POST", "route": "/api/users", "statusCode": 200, "requests": 5, "date": "9/20/2020" }]
-
 ```
 ``` JSON
 [ { "method": "GET", "route": "/api/users", "statusCode": 304, "requests": 2, "date": "9/20/2020", "hour": "12" }]
-
 ```
 #### Side Notes:
 - It is very important you initialize the listen middleware before any of your routes or custom middleware. If you don't do this, you may find some unkown error. Further testing with it is required.
