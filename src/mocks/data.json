@@ -1,1 +1,0 @@
-[ { "method": "GET", "route": "/api/users", "statusCode": 200, "requests": 10 }]

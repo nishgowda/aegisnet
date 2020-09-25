@@ -1,229 +1,235 @@
-import { Context } from 'koa'
-import { Event, Stats } from '../types/stats';
-import { client } from '../utils/client';
-import { returnDateFull, returnHour} from '../utils/times'
-import { defaults } from '../utils/defaults';
+import { Context } from "koa";
+import { Event, Stats } from "../types/stats";
+import { client } from "../utils/client";
+import { returnDateFull, returnHour } from "../utils/times";
+import { defaults } from "../utils/defaults";
 
 export let koaState = {
-    responseTime: 0 as number
-} 
+  responseTime: 0 as number,
+};
 
+// Helper to format the route
 const koaFetchRoute = (ctx: Context) => {
-  const route: string = ctx.req.url ? ctx.req.url : 'unkown';
-  // const baseUrl: string = req. ? req.url : '';
+  const route: string = ctx.req.url ? ctx.req.url : "unkown"; 
   if (!route) {
-    return 'unkown route';
+    return "unkown route";
   }
-    return route;
-  };
+  return route;
+};
 
-  // Retrieve the stats from persistance storage and parse the JSON
-  const koaGetStats = async (key: string) => {
-    let data = {};
-    try {
-      const value = await client.get(key);
-      data = JSON.parse(value);
-    } catch (error) {
-      throw error;
-    }
-    return data;
-  };
+// Retrieve the stats from persistance storage and parse the JSON
+const koaGetStats = async (key: string) => {
+  let data = {};
+  try {
+    const value = await client.get(key);
+    data = JSON.parse(value);
+  } catch (error) {
+    throw error;
+  }
+  return data;
+};
 
-  // Reset the value of key with updated stats and endpoints
-  const koaDumpStats = async (stats: Event[], key: string) => {
-    try {
-      client.set(key, JSON.stringify(stats));
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  // Helper to return date in MM/DD/YYYY format
+// Reset the value of key with updated stats and endpoints
+const koaDumpStats = async (stats: Event[], key: string) => {
+  try {
+    client.set(key, JSON.stringify(stats));
+  } catch (error) {
+    throw error;
+  }
+};
 
 
-  // Fetch the event and the the response time of each event.
- export const koaFetchResponseTimes = async (ctx: Context) => {
-    try {
-      koaGetStats(defaults.responseKey ? defaults.responseKey : 'response-times')
-        .then((response) => {
-          let myStats: Stats[];
-          myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
-          const event: Event = {
-            method: ctx.req.method,
-            route: koaFetchRoute(ctx),
-            statusCode: ctx.res.statusCode,
-            date: returnDateFull(),
-            hour: returnHour(),
-            responseTime: koaState.responseTime,
-          };
+// Fetch the event and the the response time of each event.
+export const koaFetchResponseTimes = async (ctx: Context) => {
+  try {
+    koaGetStats(defaults.responseKey ? defaults.responseKey : "response-times")
+      .then((response) => {
+        let myStats: Stats[];
+        myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
+        const event: Event = {
+          method: ctx.req.method,
+          route: koaFetchRoute(ctx),
+          statusCode: ctx.res.statusCode,
+          date: returnDateFull(),
+          hour: returnHour(),
+          responseTime: koaState.responseTime,
+        };
+        myStats.push(event);
+        koaDumpStats(
+          myStats,
+          defaults.responseKey ? defaults.responseKey : "response-times"
+        );
+      })
+      .catch((err) => {
+        throw err;
+      });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Fetches the number of events hit per day
+export const koaFetchDailyStats = async (ctx: Context) => {
+  try {
+    koaGetStats(defaults.dailyKey ? defaults.dailyKey : "daily")
+      .then((response) => {
+        let myStats: Stats[];
+        myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
+        const event: Event = {
+          method: ctx.req.method,
+          route: koaFetchRoute(ctx),
+          statusCode: ctx.res.statusCode,
+          date: returnDateFull(),
+        };
+        if (response) {
+          if (
+            myStats.some(
+              (
+                item: Event // Check if the event already exists
+              ) =>
+                item.date === event.date &&
+                item.method === event.method &&
+                item.route === event.route &&
+                item.statusCode === event.statusCode
+            )
+          ) {
+            myStats.map((item: Event) => {
+              // Check if events are equivalent
+              if (
+                item.date === event.date &&
+                item.method === event.method &&
+                item.route === event.route &&
+                item.statusCode === event.statusCode
+              ) {
+                item.requests ? (item.requests += 1) : (item.requests = 1); // If the found event already exists then increment the number of requests
+              }
+            });
+          } else {
+            event.requests = 1; // If the event is not found then it's added the object
+            myStats.push(event);
+          }
+        } else {
+          // If the object is empty then push event to object
+          event.requests = 1;
           myStats.push(event);
-          koaDumpStats(myStats, defaults.responseKey ? defaults.responseKey : 'response-times');
-        })
-        .catch((err) => {
-          throw err;
-        });
-    } catch (error) {
-      throw error;
-    }
-  };
+        }
+        koaDumpStats(myStats, defaults.dailyKey ? defaults.dailyKey : "daily");
+      })
+      .catch((err) => {
+        throw err;
+      });
+  } catch (error) {
+    throw error;
+  }
+};
 
-  // Fetches the number of events hit per day
- export const koaFetchDailyStats = async (ctx: Context) => {
-    try {
-      koaGetStats(defaults.dailyKey ? defaults.dailyKey : 'daily')
-        .then((response) => {
-          let myStats: Stats[];
-          myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
-          const event: Event = {
-            method: ctx.req.method,
-            route: koaFetchRoute(ctx),
-            statusCode: ctx.res.statusCode,
-            date: returnDateFull(),
-          };
-          if (response) {
-            if (
-              myStats.some(
-                (
-                  item: Event, // Check if the event already exists
-                ) =>
-                  item.date === event.date &&
-                  item.method === event.method &&
-                  item.route === event.route &&
-                  item.statusCode === event.statusCode,
-              )
-            ) {
-              myStats.map((item: Event) => {
-                // Check if events are equivalent
-                if (
-                  item.date === event.date &&
-                  item.method === event.method &&
-                  item.route === event.route &&
-                  item.statusCode === event.statusCode
-                ) {
-                  item.requests ? (item.requests += 1) : (item.requests = 1); // If the found event already exists then increment the number of requests
-                }
-              });
-            } else {
-              event.requests = 1; // If the event is not found then it's added the object
-              myStats.push(event);
-            }
+// Fetches the number of events hit per hour
+export const koaFetchHourlyStats = async (ctx: Context) => {
+  try {
+    koaGetStats(defaults.hourlyKey ? defaults.hourlyKey : "hourly")
+      .then((response) => {
+        let myStats: Stats[];
+        myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
+        const event: Event = {
+          method: ctx.req.method,
+          route: koaFetchRoute(ctx),
+          statusCode: ctx.res.statusCode,
+          date: returnDateFull(),
+          hour: returnHour(),
+        };
+        if (response) {
+          if (
+            myStats.some(
+              (
+                item: Event // Check if the event already exists
+              ) =>
+                item.date === event.date &&
+                item.hour === event.hour &&
+                item.method === event.method &&
+                item.route === event.route &&
+                item.statusCode === event.statusCode
+            )
+          ) {
+            myStats.map((item: Event) => {
+              // Check if events are equivalent
+              if (
+                item.date === event.date &&
+                item.hour === event.hour &&
+                item.method === event.method &&
+                item.route === event.route &&
+                item.statusCode === event.statusCode
+              ) {
+                item.requests ? (item.requests += 1) : (item.requests = 1); // If the found event already exists then increment the number of requests
+              }
+            });
           } else {
-            // If the object is empty then push event to object
-            event.requests = 1;
+            event.requests = 1; // If the event is not found then it's added the object
             myStats.push(event);
           }
-          koaDumpStats(myStats, defaults.dailyKey ? defaults.dailyKey : 'daily');
-        })
-        .catch((err) => {
-          throw err;
-        });
-    } catch (error) {
-      throw error;
-    }
-  };
-  export const koaFetchHourlyStats = async (ctx: Context) => {
-    try {
-      koaGetStats(defaults.hourlyKey ? defaults.hourlyKey : 'hourly')
-        .then((response) => {
-          let myStats: Stats[];
-          myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
-          const event: Event = {
-            method: ctx.req.method,
-            route: koaFetchRoute(ctx),
-            statusCode: ctx.res.statusCode,
-            date: returnDateFull(),
-            hour: returnHour(),
-          };
-          if (response) {
-            if (
-              myStats.some(
-                (
-                  item: Event, // Check if the event already exists
-                ) =>
-                  item.date === event.date &&
-                  item.hour === event.hour &&
-                  item.method === event.method &&
-                  item.route === event.route &&
-                  item.statusCode === event.statusCode,
-              )
-            ) {
-              myStats.map((item: Event) => {
-                // Check if events are equivalent
-                if (
-                  item.date === event.date &&
-                  item.hour === event.hour &&
-                  item.method === event.method &&
-                  item.route === event.route &&
-                  item.statusCode === event.statusCode
-                ) {
-                  item.requests ? (item.requests += 1) : (item.requests = 1); // If the found event already exists then increment the number of requests
-                }
-              });
-            } else {
-              event.requests = 1; // If the event is not found then it's added the object
-              myStats.push(event);
-            }
-          } else {
-            // If the object is empty then push event to object
-            event.requests = 1;
-            myStats.push(event);
-          }
-          koaDumpStats(myStats, defaults.hourlyKey ? defaults.hourlyKey : 'hourly');
-        })
-        .catch((err) => {
-          throw err;
-        });
-    } catch (error) {
-      throw error;
-    }
-  };
+        } else {
+          // If the object is empty then push event to object
+          event.requests = 1;
+          myStats.push(event);
+        }
+        koaDumpStats(
+          myStats,
+          defaults.hourlyKey ? defaults.hourlyKey : "hourly"
+        );
+      })
+      .catch((err) => {
+        throw err;
+      });
+  } catch (error) {
+    throw error;
+  }
+};
 
-  // Fethces the total number of requests for each event hit
-  export const koaFetchTotalStats = async (ctx: Context) => {
-    try {
-      koaGetStats(defaults.totalKey ? defaults.totalKey : 'total')
-        .then((response) => {
-          let myStats: Stats[];
-          myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
-          const event: Event = {
-            method: ctx.req.method,
-            route: koaFetchRoute(ctx),
-            statusCode: ctx.res.statusCode,
-          };
-          if (response) {
-            // Check if the event already exists
-            if (
-              myStats.some(
-                (item: Event) =>
-                  item.method === event.method && item.route === event.route && item.statusCode === event.statusCode,
-              )
-            ) {
-              myStats.map((item: Event) => {
-                // check if events are equivalent
-                if (
-                  item.method === event.method &&
-                  item.route === event.route &&
-                  item.statusCode === event.statusCode
-                ) {
-                  item.requests ? (item.requests += 1) : (item.requests = 1); // If the found event already exists then increment the number of requests
-                }
-              });
-            } else {
-              event.requests = 1;
-              myStats.push(event); // If the event is not found then add it to the object
-            }
+// Fethces the total number of requests for each event hit
+export const koaFetchTotalStats = async (ctx: Context) => {
+  try {
+    koaGetStats(defaults.totalKey ? defaults.totalKey : "total")
+      .then((response) => {
+        let myStats: Stats[];
+        myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
+        const event: Event = {
+          method: ctx.req.method,
+          route: koaFetchRoute(ctx),
+          statusCode: ctx.res.statusCode,
+        };
+        if (response) {
+          // Check if the event already exists
+          if (
+            myStats.some(
+              (item: Event) =>
+                item.method === event.method &&
+                item.route === event.route &&
+                item.statusCode === event.statusCode
+            )
+          ) {
+            myStats.map((item: Event) => {
+              // check if events are equivalent
+              if (
+                item.method === event.method &&
+                item.route === event.route &&
+                item.statusCode === event.statusCode
+              ) {
+                item.requests ? (item.requests += 1) : (item.requests = 1); // If the found event already exists then increment the number of requests
+              }
+            });
           } else {
             event.requests = 1;
-            myStats.push(event); // If the object is empty then push event to object
+            myStats.push(event); // If the event is not found then add it to the object
           }
-          koaDumpStats(myStats, defaults.totalKey ? defaults.totalKey : 'total');
-        })
-        .catch((err) => {
-          throw err;
-        });
-    } catch (error) {
-      throw error;
-    }
-  };
-
-
+        } else {
+          event.requests = 1;
+          myStats.push(event); // If the object is empty then push event to object
+        }
+        koaDumpStats(myStats, defaults.totalKey ? defaults.totalKey : "total");
+      })
+      .catch((err) => {
+        throw err;
+      });
+  } catch (error) {
+    throw error;
+  }
+};
