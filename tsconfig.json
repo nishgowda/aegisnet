@@ -28,6 +28,6 @@
     "baseUrl": ".",
     "allowJs": true
   },
-  "exclude": ["node_modules", "**/__tests__/*", "**/mocks/*"],
+  "exclude": ["node_modules", "**/__tests__/*", "**/dev-test/*"],
   "include": ["src"],
 }

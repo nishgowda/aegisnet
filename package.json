@@ -1,9 +1,9 @@
 {
   "name": "aegis-net",
-  "version": "1.0.5",
-  "description": "",
+  "version": "1.0.6",
+  "description": "Monitor your express, koa, or http servers and API",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "typings": "dist/index.ts",
   "scripts": {
     "test": "jest --forceExit --config jestconfig.json",
     "test-express": "nodemon --exec ts-node src/dev-test/express.ts",
@@ -21,7 +21,7 @@
     "postversion": "git push && git push --tags"
   },
   "files": [
-    "dist/**/*"
+    "dist"
   ],
   "repository": {
     "type": "git",
