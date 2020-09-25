@@ -18,7 +18,7 @@ jobs:
     - name: Start Redis
       uses: supercharge/redis-github-action@1.1.0
       with:
-        redis-version: ${{ matrix.redis-version }
+        redis-version: ${{ matrix.redis-version }}
 
     - uses: actions/checkout@v2
     # Setup .npmrc file to publish to npm
