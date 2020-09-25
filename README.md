@@ -14,7 +14,7 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 - [X] Monitoring daily requests
 - [X] Moinotring requests per hour
 - [X] Monitoring response times
-- [X] Custom option
+- [X] Custom options
 
 ### A quick rundown:
 * An object is made in redis that is defined as an **event**. An **event** is a collection of the route, the method, the status code, the number of requests, and date and hour (depending on what key is specified).

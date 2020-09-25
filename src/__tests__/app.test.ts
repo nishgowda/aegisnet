@@ -23,7 +23,8 @@ test("mock api call", async () => {
 test("mocking redis", async () => {
   const result = await client.get("total");
   console.log(result);
-  expect(JSON.parse(result || "{}")).toStrictEqual([
-    { method: "GET", route: "/api/blah", statusCode: 200, requests: 1 },
-  ]);
+  expect(JSON.parse(result || '{}')).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ method: "GET", route: "/api/blah", statusCode: 200 })])
+  );
 });
