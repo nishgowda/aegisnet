@@ -1,5 +1,5 @@
 import koa from 'koa';
-import AegisNet from '../index1';
+import AegisNet from '..';
 import Router from '@koa/router';
 
 const app = new koa();

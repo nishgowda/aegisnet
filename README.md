@@ -8,7 +8,7 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 ![GitHub](https://img.shields.io/github/license/nishgowda/aegis)
 ## Features:
 - [X] Url request monitoring
-- [X] Easily intergratable with express
+- [X] Easily integratable with express
 - [X] Fast and efficient data storage based on Redis
 - [X] Daily monitoring
 - [X] Hourly monitoring
@@ -16,7 +16,7 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 ### A quick rundown:
 * An object is made in redis that is defined as an **event**. An **event** is a collection of the route, the method, the status code, the number of requests, and date and hour (depending on what key is specified).
 
-* Redis stores the data per request into three sepreate keys:
+* Redis stores the data per request into three separate keys:
  1. "total" - the total number of requests per event (date and hour are not included here)
  2. "daily" - the total number of requests per event per day
  3. "hourly" - the total number of requests per event per hour of every day.

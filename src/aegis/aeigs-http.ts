@@ -1,24 +1,22 @@
-import { Context } from 'koa'
 import { Event, Stats } from '../types/stats';
 import { client } from '../utils/client';
 import { returnDateFull, returnHour} from '../utils/times'
-import { defaults } from '../utils/defaults';
-
-export let koaState = {
+import {defaults} from '../utils/defaults'
+export let httpState = {
     responseTime: 0 as number
 } 
 
-const koaFetchRoute = (ctx: Context) => {
-  const route: string = ctx.req.url ? ctx.req.url : 'unkown';
-  // const baseUrl: string = req. ? req.url : '';
-  if (!route) {
-    return 'unkown route';
-  }
-    return route;
+const httpFetchRoute = (req: Request) => {
+    const route: string = req.url ? req.url : 'unkown';
+    // const baseUrl: string = req. ? req.url : '';
+    if (!route) {
+      return 'unkown route';
+    }
+      return route
   };
 
   // Retrieve the stats from persistance storage and parse the JSON
-  const koaGetStats = async (key: string) => {
+  const httpGetStats = async (key: string) => {
     let data = {};
     try {
       const value = await client.get(key);
@@ -30,9 +28,9 @@ const koaFetchRoute = (ctx: Context) => {
   };
 
   // Reset the value of key with updated stats and endpoints
-  const koaDumpStats = async (stats: Event[], key: string) => {
+  const httpDumpStats = async (stats: Event[], key: string) => {
     try {
-      client.set(key, JSON.stringify(stats));
+      client.set(key, JSON.stringify(stats))
     } catch (error) {
       throw error;
     }
@@ -41,23 +39,24 @@ const koaFetchRoute = (ctx: Context) => {
   // Helper to return date in MM/DD/YYYY format
 
 
+
   // Fetch the event and the the response time of each event.
- export const koaFetchResponseTimes = async (ctx: Context) => {
+ export const httpFetchResponseTimes = async (req: Request, res: Response) => {
     try {
-      koaGetStats(defaults.responseKey ? defaults.responseKey : 'response-times')
+      httpGetStats(defaults.responseKey ? defaults.responseKey : 'response-times')
         .then((response) => {
           let myStats: Stats[];
           myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
           const event: Event = {
-            method: ctx.req.method,
-            route: koaFetchRoute(ctx),
-            statusCode: ctx.res.statusCode,
+            method: req.method,
+            route: httpFetchRoute(req),
+            statusCode: res.status,
             date: returnDateFull(),
             hour: returnHour(),
-            responseTime: koaState.responseTime,
+            responseTime: httpState.responseTime,
           };
           myStats.push(event);
-          koaDumpStats(myStats, defaults.responseKey ? defaults.responseKey : 'response-times');
+          httpDumpStats(myStats, defaults.responseKey ? defaults.responseKey : 'response-times');
         })
         .catch((err) => {
           throw err;
@@ -68,16 +67,17 @@ const koaFetchRoute = (ctx: Context) => {
   };
 
   // Fetches the number of events hit per day
- export const koaFetchDailyStats = async (ctx: Context) => {
-    try {
-      koaGetStats(defaults.dailyKey ? defaults.dailyKey : 'daily')
+ export const httpFetchDailyStats = async (req: Request, res: Response) => {
+   try {
+
+      httpGetStats(defaults.dailyKey ? defaults.dailyKey : 'daily')
         .then((response) => {
           let myStats: Stats[];
           myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
           const event: Event = {
-            method: ctx.req.method,
-            route: koaFetchRoute(ctx),
-            statusCode: ctx.res.statusCode,
+            method: req.method,
+            route: httpFetchRoute(req),
+            statusCode: res.status,
             date: returnDateFull(),
           };
           if (response) {
@@ -112,7 +112,7 @@ const koaFetchRoute = (ctx: Context) => {
             event.requests = 1;
             myStats.push(event);
           }
-          koaDumpStats(myStats, defaults.dailyKey ? defaults.dailyKey : 'daily');
+          httpDumpStats(myStats, defaults.dailyKey ? defaults.dailyKey : 'daily');
         })
         .catch((err) => {
           throw err;
@@ -121,16 +121,16 @@ const koaFetchRoute = (ctx: Context) => {
       throw error;
     }
   };
-  export const koaFetchHourlyStats = async (ctx: Context) => {
+  export const httpFetchHourlyStats = async (req: Request, res: Response) => {
     try {
-      koaGetStats(defaults.hourlyKey ? defaults.hourlyKey : 'hourly')
+      httpGetStats(defaults.hourlyKey ? defaults.hourlyKey : 'hourly')
         .then((response) => {
           let myStats: Stats[];
           myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
           const event: Event = {
-            method: ctx.req.method,
-            route: koaFetchRoute(ctx),
-            statusCode: ctx.res.statusCode,
+            method: req.method,
+            route: httpFetchRoute(req),
+            statusCode: res.status,
             date: returnDateFull(),
             hour: returnHour(),
           };
@@ -168,7 +168,7 @@ const koaFetchRoute = (ctx: Context) => {
             event.requests = 1;
             myStats.push(event);
           }
-          koaDumpStats(myStats, defaults.hourlyKey ? defaults.hourlyKey : 'hourly');
+          httpDumpStats(myStats, defaults.hourlyKey ? defaults.hourlyKey : 'hourly');
         })
         .catch((err) => {
           throw err;
@@ -179,16 +179,16 @@ const koaFetchRoute = (ctx: Context) => {
   };
 
   // Fethces the total number of requests for each event hit
-  export const koaFetchTotalStats = async (ctx: Context) => {
+  export const httpFetchTotalStats = async (req: Request, res: Response) => {
     try {
-      koaGetStats(defaults.totalKey ? defaults.totalKey : 'total')
+      httpGetStats(defaults.totalKey ? defaults.totalKey : 'total')
         .then((response) => {
           let myStats: Stats[];
           myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
           const event: Event = {
-            method: ctx.req.method,
-            route: koaFetchRoute(ctx),
-            statusCode: ctx.res.statusCode,
+            method: req.method,
+            route: httpFetchRoute(req),
+            statusCode: res.status,
           };
           if (response) {
             // Check if the event already exists
@@ -216,7 +216,7 @@ const koaFetchRoute = (ctx: Context) => {
             event.requests = 1;
             myStats.push(event); // If the object is empty then push event to object
           }
-          koaDumpStats(myStats, defaults.totalKey ? defaults.totalKey : 'total');
+          httpDumpStats(myStats, defaults.totalKey?  defaults.totalKey: 'total');
         })
         .catch((err) => {
           throw err;

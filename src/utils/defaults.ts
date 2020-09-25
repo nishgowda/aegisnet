@@ -9,7 +9,5 @@ export let defaults: Options = {
 }
 
 export const setOptions = (options: Options) => {
-    console.log(options)
-    defaults = options;
-    console.log('defaults',defaults);
+     defaults = options;
 }

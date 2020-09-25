@@ -10,7 +10,6 @@ export let expressState = {
 const expressFetchRoute = (req: Request) => {
     const route: string = req.route ? req.route.path : '';
     const baseUrl: string = req.baseUrl ? req.baseUrl : '';
-    console.log('route', route);
     return route ? `${baseUrl === '/' ? '' : baseUrl}${route}` : 'unknown route';
   };
 
@@ -29,22 +28,7 @@ const expressFetchRoute = (req: Request) => {
   // Reset the value of key with updated stats and endpoints
   const expressDumpStats = async (stats: Event[], key: string) => {
     try {
-      switch (key) {
-        case 'daily':
-          client.set(key, JSON.stringify(stats));
-          break;
-        case 'total':
-          client.set(key, JSON.stringify(stats));
-          break;
-        case 'hourly':
-          client.set(key, JSON.stringify(stats));
-          break;
-        case 'response-times':
-          client.set(key, JSON.stringify(stats));
-          break;
-        default:
-          break;
-      }
+      client.set(key, JSON.stringify(stats))
     } catch (error) {
       throw error;
     }
@@ -83,7 +67,6 @@ const expressFetchRoute = (req: Request) => {
   // Fetches the number of events hit per day
  export const expressFetchDailyStats = async (req: Request, res: Response) => {
    try {
-      console.log(defaults.dailyKey)
       expressGetStats(defaults.dailyKey ? defaults.dailyKey : 'daily')
         .then((response) => {
           let myStats: Stats[];

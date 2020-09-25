@@ -1,5 +1,5 @@
 import express from 'express' 
-import AegisNet from '../index1'
+import AegisNet from '..'
 import redis from 'redis'
 const app = express();
 const connectionString = 'redis://127.0.0.1:6379'
