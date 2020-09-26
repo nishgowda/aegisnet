@@ -36,7 +36,7 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 ### With Express:
 ``` javascript
 const express = require('express')
-const AegisNet  = require('aegis-net').default;
+const {AegisNet}  = require('aegis-net');
 const app = express();
 app.use(express.json());
 const aegis = new AegisNet;
@@ -46,7 +46,7 @@ app.use(aegis.express())
 ### With Koa:
 ```javascript
 const koa = require('koa');
-const AegisNet  = require('aegis-net').default;
+const {AegisNet}  = require('aegis-net');
 const router = require('@koa/router');
 const app = new koa();
 const router = new Router();
@@ -57,7 +57,7 @@ app.use(aegis.koa());
 ### With http:
 ```javascript
 const http = require('http');
-const AegisNet  = require('aegis-net').default;
+const {AegisNet}  = require('aegis-net');
 
 const server = http.createServer((req, res) => {
     // server code her
@@ -71,7 +71,7 @@ server.listen(3000, () => "Listening");
 
 ``` javascript
 const express = require('express')
-const AegisNet  = require('aegis-net').default;
+const {AegisNet}  = require('aegis-net');
 const app = express();
 app.use(express.json());
 const aegis = new AegisNet;
