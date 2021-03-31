@@ -15,6 +15,7 @@ If you'd like to contribute, start by searching through the issues and pull requ
 
 If you don't see your idea listed, and you think it fits into the goals of this guide, open a pull request.
 
+**You must also increment the package version incase your PR is succesfull**
 ## Things to look for:
 - Try to see if any type safety has been ingored - this is essential for the organization of the project. We try to ceck for this as much as possible, but sometimes we can miss some
 - If you any feature requests or ideas that haven't been addressed leave a PR with a detailed label and description about it
