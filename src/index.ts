@@ -67,6 +67,7 @@ export class AegisNet {
       next();
     };
   }
+  
   http(req: IncomingMessage, res: ServerResponse, options?: Options) {
     if (options?.port || options?.host) {
       redisClient(options);

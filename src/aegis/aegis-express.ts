@@ -16,12 +16,12 @@ const expressFetchRoute = (req: Request) => {
 
 // Retrieve the stats from persistance storage and parse the JSON
 const expressGetStats = async (key: string) => {
-  let data = {};
+  let data: Stats[];
   try {
     const value = await client.get(key);
     data = JSON.parse(value);
   } catch (error) {
-    throw error;
+    return error;
   }
   return data;
 };
@@ -31,7 +31,7 @@ const expressDumpStats = async (stats: Event[], key: string) => {
   try {
     client.set(key, JSON.stringify(stats));
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 
@@ -41,12 +41,8 @@ export const expressFetchResponseTimes = async (
   res: Response
 ) => {
   try {
-    expressGetStats(
-      defaults.responseKey ? defaults.responseKey : "response-times"
-    )
-      .then((response) => {
-        let myStats: Stats[];
-        myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
+    const response: Stats[] = await expressGetStats(defaults.responseKey ? defaults.responseKey : "response-times");
+    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
         const event: Event = {
           method: req.method,
           route: expressFetchRoute(req),
@@ -60,140 +56,122 @@ export const expressFetchResponseTimes = async (
           myStats,
           defaults.responseKey ? defaults.responseKey : "response-times"
         );
-      })
-      .catch((err) => {
-        throw err;
-      });
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 
 // Fetches the number of events hit per day
 export const expressFetchDailyStats = async (req: Request, res: Response) => {
   try {
-    expressGetStats(defaults.dailyKey ? defaults.dailyKey : "daily")
-      .then((response) => {
-        let myStats: Stats[];
-        myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
-        const event: Event = {
-          method: req.method,
-          route: expressFetchRoute(req),
-          statusCode: res.statusCode,
-          date: returnDateFull(),
-        };
-        if (response) {
+    const response: Stats[] = await expressGetStats(defaults.dailyKey ? defaults.dailyKey : "daily");
+    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
+    const event: Event = {
+      method: req.method,
+      route: expressFetchRoute(req),
+      statusCode: res.statusCode,
+      date: returnDateFull(),
+    };
+    if (response) {
+      if (
+        myStats.some(
+          (
+            item: Event // Check if the event already exists
+          ) =>
+            item.date === event.date &&
+            item.method === event.method &&
+            item.route === event.route &&
+            item.statusCode === event.statusCode
+        )
+      ) {
+        myStats.forEach((item: Event) => {
+          // Check if events are equivalent
           if (
-            myStats.some(
-              (
-                item: Event // Check if the event already exists
-              ) =>
-                item.date === event.date &&
-                item.method === event.method &&
-                item.route === event.route &&
-                item.statusCode === event.statusCode
-            )
+            item.date === event.date &&
+            item.method === event.method &&
+            item.route === event.route &&
+            item.statusCode === event.statusCode
           ) {
-            myStats.map((item: Event) => {
-              // Check if events are equivalent
-              if (
-                item.date === event.date &&
-                item.method === event.method &&
-                item.route === event.route &&
-                item.statusCode === event.statusCode
-              ) {
-                item.requests ? (item.requests += 1) : (item.requests = 1); // If the found event already exists then increment the number of requests
-              }
-            });
-          } else {
-            event.requests = 1; // If the event is not found then it's added the object
-            myStats.push(event);
+            item.requests ? (item.requests += 1) : (item.requests = 1); // If the found event already exists then increment the number of requests
           }
-        } else {
-          // If the object is empty then push event to object
-          event.requests = 1;
-          myStats.push(event);
-        }
-        expressDumpStats(
-          myStats,
-          defaults.dailyKey ? defaults.dailyKey : "daily"
-        );
-      })
-      .catch((err) => {
-        throw err;
-      });
+        });
+      } else {
+        event.requests = 1; // If the event is not found then it's added the object
+        myStats.push(event);
+      }
+    } else {
+      // If the object is empty then push event to object
+      event.requests = 1;
+      myStats.push(event);
+    }
+    expressDumpStats(
+      myStats,
+      defaults.dailyKey ? defaults.dailyKey : "daily"
+    );
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 // Fetch stats per hour
 export const expressFetchHourlyStats = async (req: Request, res: Response) => {
   try {
-    expressGetStats(defaults.hourlyKey ? defaults.hourlyKey : "hourly")
-      .then((response) => {
-        let myStats: Stats[];
-        myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
-        const event: Event = {
-          method: req.method,
-          route: expressFetchRoute(req),
-          statusCode: res.statusCode,
-          date: returnDateFull(),
-          hour: returnHour(),
-        };
-        if (response) {
+    const response = await expressGetStats(defaults.hourlyKey ? defaults.hourlyKey : "hourly");
+    let myStats: Stats[] =response || []; // If repsonse is null create an empty object
+    const event: Event = {
+      method: req.method,
+      route: expressFetchRoute(req),
+      statusCode: res.statusCode,
+      date: returnDateFull(),
+      hour: returnHour(),
+    };
+    if (response) {
+      if (
+        myStats.some(
+          (
+            item: Event // Check if the event already exists
+          ) =>
+            item.date === event.date &&
+            item.hour === event.hour &&
+            item.method === event.method &&
+            item.route === event.route &&
+            item.statusCode === event.statusCode
+        )
+      ) {
+        myStats.forEach((item: Event) => {
+          // Check if events are equivalent
           if (
-            myStats.some(
-              (
-                item: Event // Check if the event already exists
-              ) =>
-                item.date === event.date &&
-                item.hour === event.hour &&
-                item.method === event.method &&
-                item.route === event.route &&
-                item.statusCode === event.statusCode
-            )
+            item.date === event.date &&
+            item.hour === event.hour &&
+            item.method === event.method &&
+            item.route === event.route &&
+            item.statusCode === event.statusCode
           ) {
-            myStats.map((item: Event) => {
-              // Check if events are equivalent
-              if (
-                item.date === event.date &&
-                item.hour === event.hour &&
-                item.method === event.method &&
-                item.route === event.route &&
-                item.statusCode === event.statusCode
-              ) {
-                item.requests ? (item.requests += 1) : (item.requests = 1); // If the found event already exists then increment the number of requests
-              }
-            });
-          } else {
-            event.requests = 1; // If the event is not found then it's added the object
-            myStats.push(event);
+            item.requests ? (item.requests += 1) : (item.requests = 1); // If the found event already exists then increment the number of requests
           }
-        } else {
-          // If the object is empty then push event to object
-          event.requests = 1;
-          myStats.push(event);
-        }
-        expressDumpStats(
-          myStats,
-          defaults.hourlyKey ? defaults.hourlyKey : "hourly"
-        );
-      })
-      .catch((err) => {
-        throw err;
-      });
+        });
+      } else {
+        event.requests = 1; // If the event is not found then it's added the object
+        myStats.push(event);
+      }
+    } else {
+      // If the object is empty then push event to object
+      event.requests = 1;
+      myStats.push(event);
+    }
+    expressDumpStats(
+      myStats,
+      defaults.hourlyKey ? defaults.hourlyKey : "hourly"
+    );
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 
 // Fethces the total number of requests for each event hit
 export const expressFetchTotalStats = async (req: Request, res: Response) => {
   try {
-    expressGetStats(defaults.totalKey ? defaults.totalKey : "total")
-      .then((response) => {
-        let myStats: Stats[];
-        myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
+    const response:Stats[] = await expressGetStats(defaults.totalKey ? defaults.totalKey : "total");
+    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
         const event: Event = {
           method: req.method,
           route: expressFetchRoute(req),
@@ -209,7 +187,7 @@ export const expressFetchTotalStats = async (req: Request, res: Response) => {
                 item.statusCode === event.statusCode
             )
           ) {
-            myStats.map((item: Event) => {
+            myStats.forEach((item: Event) => {
               // check if events are equivalent
               if (
                 item.method === event.method &&
@@ -231,11 +209,7 @@ export const expressFetchTotalStats = async (req: Request, res: Response) => {
           myStats,
           defaults.totalKey ? defaults.totalKey : "total"
         );
-      })
-      .catch((err) => {
-        throw err;
-      });
   } catch (error) {
-    throw error;
+    return error;
   }
 };

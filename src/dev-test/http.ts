@@ -1,3 +1,4 @@
+// Note these files are meant to test aegisnet for http in development
 import http from "http";
 import { AegisNet } from "../index";
 const aegis = new AegisNet();

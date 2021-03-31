@@ -1,3 +1,4 @@
+// Note these files are meant to test aegisnet for koa in development
 import koa from "koa";
 import { AegisNet } from "..";
 import Router from "@koa/router";

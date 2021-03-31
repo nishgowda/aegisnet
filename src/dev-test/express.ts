@@ -1,3 +1,4 @@
+// Note these files are meant to test aegisnet for express in development
 import express from "express";
 import { AegisNet }  from "..";
 import Redis from "ioredis";

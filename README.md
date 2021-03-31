@@ -16,7 +16,7 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 - [X] Monitoring response times
 - [X] Custom options
 
-### A quick rundown:
+### The Rundown:
 * An object is made in redis that is defined as an **event**. An **event** is a collection of the route, the method, the status code, the number of requests, and date and hour (depending on what key is specified).
 
 * Redis stores the data per request into three separate keys:
@@ -33,7 +33,7 @@ Fast and light weight api and endpoint monitoring backed by Redis and carefully 
 ```
 
 ## Usage:
-### With Express:
+### Express:
 ``` javascript
 const express = require('express')
 const {AegisNet}  = require('aegis-net');
@@ -43,7 +43,7 @@ const aegis = new AegisNet;
 
 app.use(aegis.express())
 ```
-### With Koa:
+### Koa:
 ```javascript
 const koa = require('koa');
 const {AegisNet}  = require('aegis-net');
@@ -54,20 +54,20 @@ const router = new Router();
 app.use(aegis.koa());
 
 ```
-### With http:
+### http:
 ```javascript
 const http = require('http');
 const {AegisNet}  = require('aegis-net');
 
 const server = http.createServer((req, res) => {
-    // server code her
+    // server code here
     aegis.http(req, res);
 });
 server.listen(3000, () => "Listening");
 
 ```
 
-### If you want to add custom options:
+### Adding custom options:
 
 ``` javascript
 const express = require('express')
@@ -86,7 +86,7 @@ app.use(aegis.express({port: 6379, host: 'localhost', dailyKey: "foo"}))
 ```javascript
 app.get('/api/users',  (_, res) => {
       // note: Redis will store the data as a JSON string 
-     //  so it's important you parse after you retrieve it to work with it.
+     //  so it's important you parse after you retrieve it first to work with it.
     client.get('total', (err, stats) => {
         res.status(200).send(stats);
     });
@@ -118,6 +118,9 @@ app.get('/api/users',  (_, res) => {
 #### Side Notes:
 - It is very important you initialize the middleware before any of your routes or custom middleware. If you don't do this, you may find some unkown error. Further testing with it is required.
  - Any unkown request sent to the server will send the event with route of "unkown route".
+
+ ## Contributing:
+ Look at [] to see how you can contribute to this project.
 
 
 
