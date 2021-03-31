@@ -44,7 +44,7 @@ export const httpFetchResponseTimes = async (
 ) => {
   try {
     const response: Stats[] = await httpGetStats(defaults.responseKey ? defaults.responseKey : "response-times");
-    let myStats: Stats[] = response || [];
+    const myStats: Stats[] = response || [];
     const event: Event = {
       method: req.method,
       route: httpFetchRoute(req),
@@ -70,7 +70,7 @@ export const httpFetchDailyStats = async (
 ) => {
   try {
     const response = await httpGetStats(defaults.dailyKey ? defaults.dailyKey : "daily");
-    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
+    const myStats: Stats[] = response || []; // If repsonse is null create an empty object
         const event: Event = {
           method: req.method,
           route: httpFetchRoute(req),
@@ -120,7 +120,7 @@ export const httpFetchHourlyStats = async (
 ) => {
   try {
     const response: Stats[] = await httpGetStats(defaults.hourlyKey ? defaults.hourlyKey : "hourly");
-    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
+    const myStats: Stats[] = response || []; // If repsonse is null create an empty object
     const event: Event = {
       method: req.method,
       route: httpFetchRoute(req),
@@ -178,7 +178,7 @@ export const httpFetchTotalStats = async (
 ) => {
   try {
     const response: Stats[] = await httpGetStats(defaults.totalKey ? defaults.totalKey : "total");
-    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
+    const myStats: Stats[] = response || []; // If repsonse is null create an empty object
     const event: Event = {
       method: req.method,
       route: httpFetchRoute(req),

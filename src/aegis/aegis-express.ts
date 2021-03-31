@@ -42,7 +42,7 @@ export const expressFetchResponseTimes = async (
 ) => {
   try {
     const response: Stats[] = await expressGetStats(defaults.responseKey ? defaults.responseKey : "response-times");
-    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
+    const myStats: Stats[] = response || []; // If repsonse is null create an empty object
         const event: Event = {
           method: req.method,
           route: expressFetchRoute(req),
@@ -65,7 +65,7 @@ export const expressFetchResponseTimes = async (
 export const expressFetchDailyStats = async (req: Request, res: Response) => {
   try {
     const response: Stats[] = await expressGetStats(defaults.dailyKey ? defaults.dailyKey : "daily");
-    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
+    const myStats: Stats[] = response || []; // If repsonse is null create an empty object
     const event: Event = {
       method: req.method,
       route: expressFetchRoute(req),
@@ -116,7 +116,7 @@ export const expressFetchDailyStats = async (req: Request, res: Response) => {
 export const expressFetchHourlyStats = async (req: Request, res: Response) => {
   try {
     const response = await expressGetStats(defaults.hourlyKey ? defaults.hourlyKey : "hourly");
-    let myStats: Stats[] =response || []; // If repsonse is null create an empty object
+    const myStats: Stats[] =response || []; // If repsonse is null create an empty object
     const event: Event = {
       method: req.method,
       route: expressFetchRoute(req),
@@ -171,7 +171,7 @@ export const expressFetchHourlyStats = async (req: Request, res: Response) => {
 export const expressFetchTotalStats = async (req: Request, res: Response) => {
   try {
     const response:Stats[] = await expressGetStats(defaults.totalKey ? defaults.totalKey : "total");
-    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
+    const myStats: Stats[] = response || []; // If repsonse is null create an empty object
         const event: Event = {
           method: req.method,
           route: expressFetchRoute(req),

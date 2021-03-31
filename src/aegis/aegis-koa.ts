@@ -42,7 +42,7 @@ const koaDumpStats = async (stats: Event[], key: string) => {
 export const koaFetchResponseTimes = async (ctx: Context) => {
   try {
     const response = await koaGetStats(defaults.responseKey ? defaults.responseKey : "response-times");
-    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
+    const myStats: Stats[] = response || []; // If repsonse is null create an empty object
         const event: Event = {
           method: ctx.req.method,
           route: koaFetchRoute(ctx),
@@ -65,7 +65,7 @@ export const koaFetchResponseTimes = async (ctx: Context) => {
 export const koaFetchDailyStats = async (ctx: Context) => {
   try {
     const response = await koaGetStats(defaults.dailyKey ? defaults.dailyKey : "daily");
-    let myStats: Stats[] = response  || []; // If repsonse is null create an empty object
+    const myStats: Stats[] = response  || []; // If repsonse is null create an empty object
     const event: Event = {
       method: ctx.req.method,
       route: koaFetchRoute(ctx),
@@ -114,8 +114,7 @@ export const koaFetchDailyStats = async (ctx: Context) => {
 export const koaFetchHourlyStats = async (ctx: Context) => {
   try {
     const response:Stats[] = await koaGetStats(defaults.hourlyKey ? defaults.hourlyKey : "hourly");
-    let myStats: Stats[];
-    myStats = (response as Stats[]) || []; // If repsonse is null create an empty object
+    const myStats: Stats[] = response || []; // If repsonse is null create an empty object
     const event: Event = {
       method: ctx.req.method,
       route: koaFetchRoute(ctx),
@@ -170,7 +169,7 @@ export const koaFetchHourlyStats = async (ctx: Context) => {
 export const koaFetchTotalStats = async (ctx: Context) => {
   try {
     const response:Stats[] = await koaGetStats(defaults.totalKey ? defaults.totalKey : "total");
-    let myStats: Stats[] = response || []; // If repsonse is null create an empty object
+    const myStats: Stats[] = response || []; // If repsonse is null create an empty object
     const event: Event = {
       method: ctx.req.method,
       route: koaFetchRoute(ctx),
