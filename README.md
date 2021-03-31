@@ -120,7 +120,7 @@ app.get('/api/users',  (_, res) => {
  - Any unkown request sent to the server will send the event with route of "unkown route".
 
  ## Contributing:
- Look at [] to see how you can contribute to this project.
+ Look at [how to contribute](src/README.md) to see how you can contribute to this project.
 
 
 
